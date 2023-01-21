@@ -5,12 +5,14 @@ import {
   getTour,
   updateTour,
   deleteTour,
+  getAllToursFilter,
 } from './../controllers/tourController.js';
 
 const tourRouter = express();
 
 /// Get All Tours , Or Create New Tour
 tourRouter.route('/').get(getAllTours).post(createTour);
+tourRouter.route('/filter').get(getAllToursFilter);
 
 /// Get Specific Tour , Or Update Or Delete Tour  by ID
 

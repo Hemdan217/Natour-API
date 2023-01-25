@@ -23,12 +23,12 @@ export const getAllToursFilter = async (req, res) => {
     // Filtering :=>
     console.log(req.query);
     const queryObj = { ...req.query }; // Clone the Req Query
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    const excludedFields = ['sort', 'fields', 'page', 'limit'];
     excludedFields.forEach((ele) => delete queryObj[ele]);
 
     //* 2) Advanced Filtering ?price[gt]=500
     let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)/, (match) => `$${match}`);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/, (match) => `$${match}`);
 
     const query = tourModel.find(JSON.parse(queryStr));
 
@@ -43,6 +43,14 @@ export const getAllToursFilter = async (req, res) => {
     console.log(specificField);
     if (req.query.fields) {
       query = query.select(specificField);
+    }
+    /// 5)Pagination  ?page=2&limit=10
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+
+    const skip = (page - 1) * limit;
+    if (req.query.page) {
+      con;
     }
 
     const filteredTours = await query;

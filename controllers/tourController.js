@@ -7,6 +7,7 @@ export const getAllTours = async (req, res) => {
     const allTours = await tourModel.find();
     res.status(200).json({
       status: 'Success',
+      number: allTours.length,
       data: { allTours },
     });
   } catch (e) {
@@ -28,31 +29,33 @@ export const getAllToursFilter = async (req, res) => {
 
     //* 2) Advanced Filtering ?price[gt]=500
     let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/, (match) => `$${match}`);
-
-    const query = tourModel.find(JSON.parse(queryStr));
-
-    // 3) Sorting  ?sort=price,name
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)/, (match) => `$${match}`);
+    console.log(queryStr);
+    queryStr = JSON.parse(queryStr);
+    const query = await tourModel.find(queryStr);
+    // console.log(req.query.sort.split(',').join(' '));
+    // // 3) Sorting  ?sort=price,name
     if (req.query.sort) {
-      query = query.sort(req.query.sort.split(',').join(' '));
+      let sortBy = queryStr.sort.split(',').join(' ');
+      query = query.sort(sortBy);
     } else {
-      query = query.sort('-price');
+      query = query.sort('-createdAt');
     }
-    /// 4)Fields ?fields=price,name
-    let specificField = req.query.fields.split(',').join(' ');
-    console.log(specificField);
-    if (req.query.fields) {
-      query = query.select(specificField);
-    }
-    /// 5)Pagination  ?page=2&limit=10
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 100;
+    // /// 4)Fields ?fields=price,name
+    // let specificField = req.query.fields.split(',').join(' ');
+    // console.log(specificField);
+    // if (req.query.fields) {
+    //   query = query.select(specificField);
+    // }
+    // /// 5)Pagination  ?page=2&limit=10
+    // const page = req.query.page * 1 || 1;
+    // const limit = req.query.limit * 1 || 100;
 
-    const skip = (page - 1) * limit;
-    if (req.query.page) {
-      con;
-    }
-
+    // const skip = (page - 1) * limit;
+    // if (req.query.page) {
+    //   const toursCounts = await tourModel.find().countDocuments();
+    //   if (skip > toursCounts) throw new Error();
+    // }
     const filteredTours = await query;
     res.status(200).json({
       status: 'Success',

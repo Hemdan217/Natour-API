@@ -6,9 +6,14 @@ import {
   updateTour,
   deleteTour,
   getAllToursFilter,
+  getTourStats,
+  getMonthlyPlan,
 } from './../controllers/tourController.js';
 
 const tourRouter = express();
+
+tourRouter.route('/tour-stats').get(getTourStats);
+tourRouter.route('/monthly-plan/:year').get(getMonthlyPlan);
 
 /// Get All Tours , Or Create New Tour
 tourRouter.route('/').get(getAllTours).post(createTour);
